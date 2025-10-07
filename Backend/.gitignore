@@ -1,18 +1,2 @@
-# Node-moduler
-node_modules/
-
-# Miljövariabler
+node_modules
 .env
-
-# Loggar
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Byggfiler
-dist/
-build/
-
-# Systemfiler (Windows/Mac)
-.DS_Store
-Thumbs.db
