@@ -1,0 +1,38 @@
+@import "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css";
+svg {
+    font-size: 1.1em;
+    margin-left: -5px;
+}
+button {
+    display: flex;
+    font-size: 25px;
+    justify-content: center;
+    align-items: center;
+}
+
+nav {
+    font-family: 'Times New Roman', Times, serif;
+    color: #6774ff;
+    font-size: 1.2em;
+}
+nav li {
+    margin-left: 50px;
+}
+.navList {
+    position: relative;
+
+}
+
+span svg {
+    margin-right: 3px;
+}
+
+@media only screen and (max-width: 767px) {
+ nav {
+        gap: 0;
+        width: 100%;
+    }
+    nav li {
+    margin-left: 20px;
+}   
+}

@@ -28,7 +28,7 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction) => 
             return res.status(401).json({ error: "Invalid token payload" });
         }
 
-        req.userId = payload.id;
+        req.user = {...(req.user ?? {}), id: payload.id}
         return next();
     } catch (error) {
         return res.status(401).json({ error: "Invalid or expired token" });
