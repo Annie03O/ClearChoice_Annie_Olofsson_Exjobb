@@ -1,7 +1,8 @@
 import axios from "axios";
 
-const isProduction = import.meta.env.MODE === 'production';
-const apiBaseUrl = isProduction 
+// Check if we're on GitHub Pages or not
+const isGitHubPages = window.location.hostname === 'annie03o.github.io';
+const apiBaseUrl = isGitHubPages 
   ? "http://localhost:4000/api"  // GitHub Pages points to local Backend
   : "/api";                        // Local dev uses Vite proxy
 
