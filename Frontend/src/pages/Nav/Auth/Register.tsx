@@ -49,7 +49,7 @@ export const Register = () => {
                 </section>
                  <section className="flex w-full pt-1 relative">
                       <span className="text-[18px] flex whitespace-nowrap relative align-center">
-                        Do you already have an account? <Link className="ml-1 text-blue-400 nowrap" to={"/ClearChoice_Annie_Olofsson_Exjobb/Login"}>Sign In</Link>                  
+                        Do you already have an account? <Link className="ml-1 text-blue-400 nowrap" to={"/Login"}>Sign In</Link>                  
                       </span>   
                       <span className="absolute right-0">
                         <Button type="submit" size="small" variant="primary">Create Account</Button>

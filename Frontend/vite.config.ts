@@ -9,17 +9,12 @@ type ProxyWithOn = {
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
-  const isProd = mode === "production";
-
-  // ✅ Vercel/normal hosting: "/"
-  // ✅ Om du vill köra GitHub Pages ibland: sätt VITE_BASE=/ClearChoice_Annie_Olofsson_Exjobb/
-  const base = env.VITE_BASE ?? (isProd ? "/" : "/");
 
   const proxyTarget = env.VITE_API_PROXY_TARGET ?? "http://localhost:4000";
 
   return {
     plugins: [react(), svgr()],
-    base,
+    base: "/",
 
     // ✅ Proxy behövs bara vid `vite dev`
     server: {

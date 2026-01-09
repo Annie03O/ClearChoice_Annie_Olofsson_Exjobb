@@ -13,8 +13,6 @@ import { verifyToken } from "./middlewares/authOptional";
 dotenv.config();
 
 const app = express();
-
-// Viktigt på Render/Fly/NGINX (secure cookies + req.ip m.m.)
 app.set("trust proxy", 1);
 
 const allowedOrigins = (
@@ -28,7 +26,6 @@ const allowedOrigins = (
 app.use(
   cors({
     origin: (origin, cb) => {
-      // origin kan vara undefined (t.ex. curl/postman/same-origin)
       if (!origin) return cb(null, true);
       if (allowedOrigins.includes(origin)) return cb(null, true);
       return cb(new Error(`CORS blocked origin: ${origin}`));
@@ -37,20 +34,14 @@ app.use(
   })
 );
 
-// ✅ Du kan ta bort app.options("*", ...) helt.
-// cors-middleware hanterar preflight.
-
-// Body + cookies
 app.use(cookieParser());
 app.use(express.json());
 
-// debug
 app.use((req, _res, next) => {
   console.log("[REQ]", req.method, req.url, "origin:", req.headers.origin);
   next();
 });
 
-// authOptional globalt (som du kör nu)
 app.use((req: any, _res, next) => {
   const token = req.cookies?.accessToken;
   if (token) {
@@ -61,6 +52,7 @@ app.use((req: any, _res, next) => {
   }
   next();
 });
+app.get("/", (_req, res) => res.status(200).send("ClearChoice API is running"));
 
 app.get("/health", (_req, res) => res.status(200).send("ok-clearchoice"));
 
@@ -69,19 +61,26 @@ app.use("/api/search", searchRouter);
 app.use("/api", orderRouter);
 
 app.use("/static", express.static(path.join(process.cwd(), "src/Merch")));
-
-// 404 sist
 app.use((_req, res) => res.status(404).json({ error: "Not found" }));
 
-const PORT = Number(process.env.PORT) || 4000;
+const PORT = Number(process.env.PORT) || 8080;
 
-mongoose
-  .connect(process.env.MONGO_URL as string)
-  .then(() => {
-    console.log("Connected to MongoDB");
-    app.listen(PORT, () => console.log(`API running on http://localhost:${PORT}`));
-  })
-  .catch((err) => {
-    console.error("MongoDB error", err);
-    process.exit(1);
-  });
+// ✅ Starta servern DIREKT så Railway kan nå den
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`API listening on ${PORT}`);
+});
+
+
+// ✅ Koppla DB separat (och logga fel)
+const mongoUrl = process.env.MONGO_URL;
+console.log("MONGO_URL set?", Boolean(mongoUrl));
+console.log("MONGO_URL prefix:", mongoUrl?.slice(0, 20));
+
+if (!mongoUrl) {
+  console.error("Missing MONGO_URL env var");
+} else {
+  mongoose
+    .connect(mongoUrl)
+    .then(() => console.log("Connected to MongoDB"))
+    .catch((err) => console.error("MongoDB error", err));
+}
