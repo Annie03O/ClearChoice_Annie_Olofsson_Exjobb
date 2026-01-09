@@ -1,20 +1,21 @@
 import axios from "axios";
 
-// Check if we're on GitHub Pages or not
-const isGitHubPages = window.location.hostname === 'annie03o.github.io';
-const apiBaseUrl = isGitHubPages 
-  ? "http://localhost:4000/api"  // GitHub Pages points to local Backend
-  : "/api";                        // Local dev uses Vite proxy
+// ✅ En källa till sanning för baseURL
+// Dev: om du vill köra proxy, sätt VITE_API_BASE_URL=/api i .env.development
+// Prod: sätt VITE_API_BASE_URL=https://din-backend.../api i Vercel
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ?? "http://localhost:4000/api";
 
 export const api = axios.create({
-  baseURL: apiBaseUrl,
+  baseURL: API_BASE_URL,
   withCredentials: true,
-  headers: { "Content-Type": "application/json" },
+  headers: { "Content-Type": "application/json", Accept: "application/json" },
 });
 
 // Logga HELA URL:en snyggt
 api.interceptors.request.use((config) => {
-  const fullUrl = `${config.baseURL ?? ""}${config.url ?? ""}`;
+  // axios kan ha baseURL i instance + url i config
+  const fullUrl = `${config.baseURL ?? API_BASE_URL}${config.url ?? ""}`;
   console.log("[API] Request to:", fullUrl, "withCredentials:", config.withCredentials);
   return config;
 });
@@ -42,7 +43,7 @@ api.interceptors.response.use(
 
       try {
         refreshing = true;
-        await api.post("/auth/refresh"); // => /api/auth/refresh
+        await api.post("/auth/refresh"); // => {API_BASE_URL}/auth/refresh
         queue.forEach((fn) => fn(true));
         queue = [];
         return api(original);
@@ -59,26 +60,17 @@ api.interceptors.response.use(
   }
 );
 
-// ✅ axios-helpers
-export async function apiGet<T>(path: string): Promise<T> {
-  const res = await fetch(`/api${path}`, {
-    method: "GET",
-    credentials: "include",
-    cache: "no-store", // ✅ viktigt: undvik 304
+// ✅ Helpers – använd axios (inte fetch) så baseURL alltid respekteras
+export async function apiGet<T>(path: string, signal?: AbortSignal): Promise<T> {
+  const res = await api.get<T>(path, {
+    signal,
+    // cache headers är inte lika relevanta i axios, men kan skickas om du vill:
     headers: {
-      "Content-Type": "application/json",
-      "Cache-Control": "no-cache", // ✅ extra
+      "Cache-Control": "no-cache",
       Pragma: "no-cache",
     },
   });
-
-  const text = await res.text();
-  if (!res.ok) throw new Error(text || `Request failed (${res.status})`);
-
-  // Om tom body (ska inte hända med 200, men skyddar)
-  if (!text) throw new Error(`Empty response body (${res.status}).`);
-
-  return JSON.parse(text) as T;
+  return res.data;
 }
 
 export async function apiPost<TRes, TBody>(path: string, body: TBody): Promise<TRes> {

@@ -1,43 +1,51 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import svgr from "vite-plugin-svgr";
-
 
 type ProxyWithOn = {
   on: (event: "error" | "proxyReq" | "proxyRes", ...args: any[]) => void;
 };
 
-export default defineConfig({
-  plugins: [react(), svgr()],
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), "");
 
-  // ✅ Behåll din base (viktig för GitHub Pages)
-  base: "/ClearChoice_Annie_Olofsson_Exjobb/",
+  const isProd = mode === "production";
 
-  server: {
-    proxy: {
-      // ✅ Allt som börjar med /api skickas till backend på :4000
-      "/api": {
-        target: "http://localhost:4000",
-        changeOrigin: true,
-        secure: false,
+  // ✅ Vercel/normal hosting: "/"
+  // ✅ Om du vill köra GitHub Pages ibland: sätt VITE_BASE=/ClearChoice_Annie_Olofsson_Exjobb/
+  const base = env.VITE_BASE ?? (isProd ? "/" : "/");
 
-        // ✅ Extra debug-loggar (påverkar inte din app logiskt)
-        configure: (proxy) => {
-          const p = proxy as unknown as ProxyWithOn;
+  const proxyTarget = env.VITE_API_PROXY_TARGET ?? "http://localhost:4000";
 
-          p.on("error", (err: any, req: any) => {
-            console.error("[proxy:error]", req?.method, req?.url, err?.message);
-          });
+  return {
+    plugins: [react(), svgr()],
+    base,
 
-          p.on("proxyReq", (_proxyReq: any, req: any) => {
-            console.log("[proxy:req]", req?.method, req?.url);
-          });
+    // ✅ Proxy behövs bara vid `vite dev`
+    server: {
+      proxy: {
+        "/api": {
+          target: proxyTarget,
+          changeOrigin: true,
+          secure: false,
 
-          p.on("proxyRes", (res: any, req: any) => {
-            console.log("[proxy:res]", req?.method, req?.url, res?.statusCode);
-          });
+          configure: (proxy) => {
+            const p = proxy as unknown as ProxyWithOn;
+
+            p.on("error", (err: any, req: any) => {
+              console.error("[proxy:error]", req?.method, req?.url, err?.message);
+            });
+
+            p.on("proxyReq", (_proxyReq: any, req: any) => {
+              console.log("[proxy:req]", req?.method, req?.url, "->", proxyTarget);
+            });
+
+            p.on("proxyRes", (res: any, req: any) => {
+              console.log("[proxy:res]", req?.method, req?.url, res?.statusCode);
+            });
+          },
         },
       },
     },
-  },
+  };
 });
