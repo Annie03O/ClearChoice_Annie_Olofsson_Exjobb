@@ -1,7 +1,12 @@
 import axios from "axios";
 
+const isProduction = import.meta.env.MODE === 'production';
+const apiBaseUrl = isProduction 
+  ? "http://localhost:4000/api"  // GitHub Pages points to local Backend
+  : "/api";                        // Local dev uses Vite proxy
+
 export const api = axios.create({
-  baseURL: "/api",            // => Vite proxy skickar till http://localhost:4000
+  baseURL: apiBaseUrl,
   withCredentials: true,
   headers: { "Content-Type": "application/json" },
 });
