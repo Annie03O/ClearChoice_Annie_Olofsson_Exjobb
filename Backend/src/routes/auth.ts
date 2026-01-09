@@ -1,95 +1,217 @@
-import type { Request, Response } from "express";
-import { Router } from "express";
-import { User } from "../models/schemas/userSchema";
-import bcrypt from "bcryptjs";
+import { Request, Response, Router } from "express";
 import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../middlewares/env";
-import { cookieOpts } from "../models/objects/cookieOpts";
 import { requireAuth } from "../middlewares/Auth";
-import { products } from "../models/objects/products";
-import { searchHandler } from "../helpers/searchHandler";
-import { tshirtSizesF } from "../models/objects/sizeCalculator/tshirtSizesF";
-import { tshirtSizesM } from "../models/objects/sizeCalculator/tshirtsSizesM";
-import { oversizedFit } from "../models/objects/sizeCalculator/oversizedFit";
-import { UserSizes } from "../models/schemas/sizeSchema";
-import { saveUserSizes } from "../helpers/saveUserSizes";
-
-console.log("[auth.ts] router loaded");
+import { User } from "../models/schemas/userSchema";
+import path from "path";
+import bcrypt from "bcryptjs";
+import { JwtUserPayload } from "../models/types/JwtPayload";
+import { updateMe } from "../controllers/authController";
 
 const router = Router();
 
-// REGISTER
-router.post("/api/auth/register", async (req: Request, res: Response) => {
+function makeAccessToken(user: { id: string; email: string }) {
+  return jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET!, { expiresIn: "10m" });
+}
+
+function makeRefreshToken(user: { id: string; email: string }) {
+  return jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET!, { expiresIn: "7d" });
+}
+
+const isProd = process.env.NODE_ENV === "production";
+
+const cookieOptions = {
+  httpOnly: true,
+  secure: isProd, // true in production, false in development
+  sameSite: isProd ? "none" : "lax", // lax for localhost, none for production
+  path: "/",
+} as const;
+
+// Middleware to prevent caching on auth routes
+router.use((req: Request, res: Response, next) => {
+  res.set({
+    "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+    "Pragma": "no-cache",
+    "Expires": "0"
+  });
+  next();
+});
+
+router.post("/login", async (req: Request, res: Response) => {
+  const { email, password } = req.body as { 
+    email?: string;
+    password?: string;
+  }; 
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password required" });
+  }
+
   try {
-    const { name, email, password } = req.body;
-    if (!name?.trim() || !email?.trim() || !password?.trim()) {
-      return res.status(400).json({ error: "All fields are required" });
+    const userDoc = await User.findOne({ email: email.toLowerCase() }).exec();
+
+    if (!userDoc) {
+      return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    const exists = await User.findOne({ email: email.toLowerCase() });
-    if (exists) return res.status(409).json({ error: "Email already in use" });
+    const passwordMatches = await bcrypt.compare(password, userDoc.passwordHash);
+    if (!passwordMatches) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
 
-    const hash = await bcrypt.hash(password, 12);
-    const user = await User.create({
-      name: name.trim(),
+    const payload = { id: userDoc._id.toString(), email: userDoc.email };
+    const access = makeAccessToken(payload);
+    const refresh = makeRefreshToken(payload);
+
+    console.log("Login attempt:", email);
+
+
+    res.cookie("accessToken", access, cookieOptions);
+    
+    res.cookie("refreshToken", refresh, cookieOptions);
+
+    const user = { 
+      id: userDoc._id.toString(), 
+      email: userDoc.email, 
+      name: userDoc.name 
+    };
+  
+    return res.json({ user });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/register", async (req: Request, res: Response) => {
+  try {
+    
+    const { name, email, password } = req.body as {
+      name?: string;
+      email?: string;
+      password?: string;
+    };
+    
+    // For now, just accept any registration and log them in
+    // In production, you'd validate input, check if user exists, hash password, save to DB
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "Name, email and password required" });
+    }
+  
+    const existing = await User.findOne({ email: email.toLowerCase() }).exec();
+    
+    if (existing) {
+      return res.status(409).json({ message: "User already exists" });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    // Create new user (in-memory for demo)
+    const userDoc = await User.create({
+      name,
       email: email.toLowerCase(),
-      passwordHash: hash,
+      passwordHash,
     });
+    
+    const payload = { id: userDoc._id.toString(), email: userDoc.email };
+    const accessToken = makeAccessToken(payload);
+    const refreshToken = makeRefreshToken(payload);
+  
+    res.cookie("accessToken", accessToken, cookieOptions);
+    res.cookie("refreshToken", refreshToken, cookieOptions);
 
-    const token = jwt.sign({ id: user._id }, JWT_SECRET as string, { expiresIn: "7d" });
-    res.cookie("token", token, cookieOpts as any);
-    res.json({ user: { id: String(user._id), name: user.name, email: user.email } });
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "Server error" });
+    const user = {  
+      id: userDoc._id.toString(), 
+      email: userDoc.email, 
+      name: userDoc.name 
+    };
+  
+    return res.status(201).json({ user });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
   }
 });
 
-// LOGIN
-router.post("/api/auth/login", async (req: Request, res: Response) => {
+router.post("/refresh", (req, res) => {
+  const rt = req.cookies?.refreshToken as string | undefined;
+  if (!rt) return res.status(401).json({ message: "No refresh token" });
+
   try {
-    const { email, password } = req.body;
-    if (!email?.trim() || !password?.trim()) {
-      return res.status(400).json({ error: "Email and password required" });
-    }
+    const payload = jwt.verify(rt, process.env.JWT_SECRET!) as { id: string; email: string };
 
-    const user = await User.findOne({ email: email.toLowerCase() });
-    if (!user) return res.status(401).json({ error: "Invalid credentials" });
+    const newAccess = makeAccessToken(payload);
+    const newRefresh = makeRefreshToken(payload); // rotation
 
-    const ok = await bcrypt.compare(password, user.passwordHash);
-    if (!ok) return res.status(401).json({ error: "Invalid credentials" });
+    res.cookie("accessToken", newAccess, cookieOptions);
+    res.cookie("refreshToken", newRefresh, cookieOptions);
 
-    const token = jwt.sign({ id: user._id }, JWT_SECRET as string, { expiresIn: "7d" });
-    res.cookie("token", token, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: false,
-      path: "/",
-      maxAge: 7*24*60*60*1000
-    });
-    res.json({ user: { id: String(user._id), name: user.name, email: user.email } });
-    res.status(200).json({ok: true}); 
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "Server error" });
+    return res.json({ ok: true });
+  } catch {
+    return res.status(401).json({ message: "Invalid refresh token" });
   }
 });
 
-// ME
-router.get("/api/auth/me", requireAuth, async (req: Request, res: Response) => {
-  const user = await User.findById(req.user?.id).select("_id name email");
-  res.json({ user });
-});
 
-// LOGOUT
-router.post("/api/auth/logout", (req: Request, res: Response) => {
-  res.clearCookie("token", cookieOpts as object);
+router.get("/me", requireAuth, async (req: Request, res: Response) => {
+  try {
+    const user = req.user as JwtUserPayload;
+    // Fetch full user data from database to get name
+    const userDoc = await User.findById(user.id).exec();
+    if (!userDoc) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.json({ 
+      id: userDoc._id.toString(), 
+      email: userDoc.email, 
+      name: userDoc.name 
+    });
+  } catch (err) {
+    console.error("[/me] Error:", err);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+router.put("/me", requireAuth, updateMe)
+
+router.post("/logout", (_req, res) => {
+  res.clearCookie("accessToken", { 
+    path: "/", 
+    sameSite: cookieOptions.sameSite, 
+    secure: cookieOptions.secure 
+   }
+ );
+  res.clearCookie("refreshToken", { 
+    path: "/", 
+    sameSite: cookieOptions.sameSite, 
+    secure: cookieOptions.secure 
+   }
+  );
   res.json({ ok: true });
 });
 
-//SEARCH
-router.get("/api/search", searchHandler)
+
+
+router.post("/saveSize", requireAuth, async (req: Request, res: Response) => {
+  // Här kan du läsa ut användaren
+  const user = req.user as { id: string; email: string };
+
+  // Här kan du läsa ut storleksdata från frontend
+  const { sizeProfile } = req.body as {
+    sizeProfile?: {
+      chest?: number;
+      waist?: number;
+      hips?: number;
+      // osv...
+    };
+  };
+
+  // TODO: spara sizeProfile i databasen kopplad till user.id
+  // t.ex. i User-modellen eller i en separat Size-model
+
+  console.log("[saveSize] for user", user.email, "data:", sizeProfile);
+
+  return res.json({
+    ok: true,
+    message: "Size profile saved (stub).",
+    sizeProfile: sizeProfile ?? null,
+  });
+});
 
 
 export default router;
-

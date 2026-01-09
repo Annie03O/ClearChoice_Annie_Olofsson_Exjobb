@@ -1,22 +1,33 @@
-import type { Product } from "../models/Types/Search/Product";
-import { type Fetcher } from "../models/Types/Search/Fetcher";
-import { API_BASE } from "../lib/apiBase";
+import type { Fetcher } from "../models/Types/Search/Fetcher"; 
+import type { Product } from "../models/Types/Search/Product"; 
+import { api } from "../lib/apiBase"; 
 
 export const apiFetcher: Fetcher<Product> = async (q, signal) => {
-    const url = `${API_BASE}/api/search?query=${encodeURIComponent(q.trim())}`;
+  const query = q.trim();
 
-    const response = await fetch(url, {
-        method: "GET",
-        signal,
-        credentials: "include",
-        headers: {"Accept": "application/json"},
+  // valfritt: om tom query, returnera tom lista direkt
+  if (!query) return [];
+
+  try {
+    const res = await api.get<Product[]>("/search", {
+      params: { query },   // => /api/search?query=...
+      signal,              // axios v1+ stöder AbortController signal
+      headers: { Accept: "application/json" },
     });
 
-    if (!response.ok) {
-        const message = await response.text().catch(() => "");
-        throw new Error(`Search failed (${response.status}): ${message || response.statusText}`);
-    };
+    return res.data;
+  } catch (err: any) {
+    // Om requesten abortas
+    if (err?.name === "CanceledError" || err?.code === "ERR_CANCELED") {
+      throw err; // eller return [] om du vill tysta abort
+    }
 
-    const data = (await response.json()) as Product[];
-    return data;
-}
+    const status = err?.response?.status;
+    const message =
+      err?.response?.data?.message ??
+      (typeof err?.response?.data === "string" ? err.response.data : "") ??
+      err?.message;
+
+    throw new Error(`Search failed (${status ?? "?"}): ${message ?? ""}`.trim());
+  }
+};

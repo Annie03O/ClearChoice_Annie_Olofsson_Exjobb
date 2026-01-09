@@ -1,6 +1,6 @@
 import type React from "react";
 import { createContext } from "react";
-import type { CalcTSizeMDTO } from "../../DTO/Calc/calcTSizeMDTO";
+import type { CalcTSizeMDTO } from "../../DTO/Calc/CalcTSizeMDTO";
 
 type CalcSizeCtxM = {
   size: CalcTSizeMDTO

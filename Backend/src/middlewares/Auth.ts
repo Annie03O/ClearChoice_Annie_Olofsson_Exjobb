@@ -1,36 +1,59 @@
-import { Request, Response, NextFunction} from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { JWT_SECRET } from "./env";
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+import { JwtUserPayload } from "../models/types/JwtPayload";
 
-export const requireAuth = (req: Request, res: Response, next: NextFunction) => {
-    const cookieToken = req.cookies?.token as string | undefined;
+const isProd = process.env.NODE_ENV === "production";
 
-    let headerToken: string | undefined;
+const cookieOptions = {
+  httpOnly: true,
+  secure: isProd,
+  sameSite: isProd ? "none" : "lax",
+  path: "/",
+} as const;
 
-    const auth = req.headers.authorization;
-
-    if (auth?.startsWith('Bearer ')) {
-        headerToken = auth.slice("Bearer ".length);
+declare global {
+  namespace Express {
+    interface Request {
+      user?: JwtUserPayload;
     }
+  }
+}
 
-    const token = cookieToken ?? headerToken;
+function verifyToken(token: string) {
+  return jwt.verify(token, process.env.JWT_SECRET!) as JwtUserPayload;
+}
 
-    if (!token) {
-        return res.status(401).json({ error: "Not authenticated" });
-    }
+export function requireAuth(req: Request, res: Response, next: NextFunction) {
+  const access = req.cookies?.accessToken as string | undefined;
+  const refresh = req.cookies?.refreshToken as string | undefined;
 
+  // 1) Har vi en access-token och den funkar? Kör vidare.
+  if (access) {
     try {
-        const decoded = jwt.verify(token, JWT_SECRET as string);
-
-        const payload = typeof decoded === "string" ? undefined : (decoded as JwtPayload);
-
-        if (!payload?.id || typeof payload.id !== "string") {
-            return res.status(401).json({ error: "Invalid token payload" });
-        }
-
-        req.user = {...(req.user ?? {}), id: payload.id}
-        return next();
-    } catch (error) {
-        return res.status(401).json({ error: "Invalid or expired token" });
+      req.user = verifyToken(access);
+      return next();
+    } catch {
+      // fall through till refresh-försök
     }
+  }
+
+  // 2) Om access saknas/är ogiltig, försök skapa ny från refresh.
+  if (!refresh) {
+    return res.status(401).json({ message: "No token" });
+  }
+
+  try {
+    const payload = verifyToken(refresh); // använder samma JWT_SECRET i din kod
+    const newAccess = jwt.sign(
+      { id: payload.id, email: payload.email },
+      process.env.JWT_SECRET!,
+      { expiresIn: "10m" }
+    );
+
+    res.cookie("accessToken", newAccess, cookieOptions);
+    req.user = { id: payload.id, email: payload.email, name: payload.name };
+    return next();
+  } catch {
+    return res.status(401).json({ message: "Invalid token" });
+  }
 }

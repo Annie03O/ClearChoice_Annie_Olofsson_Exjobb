@@ -1,6 +1,8 @@
 // T-shirts
-export const OTHTSHIRT = "/Backend/src/Merch/OTH/OTH tshirt dam vit.png"
-export const OCTSHIRT = "/Backend/src/Merch/The OC/OC tshirt dam svart.png" 
+export const OTHTSHIRTWHITE = "/Backend/src/Merch/OTH/OTH tshirt dam vit.png"
+export const OTHTSHIRTBLACK = "/Backend/src/Merch/OTH/OTH tshirt dam svart.png"
+export const OTHTSHIRTGRAY = "/Backend/src/Merch/OTH/OTH tshirt dam grå.png"
+export const OCTSHIRTBl = "/Backend/src/Merch/The OC/OC tshirt dam svart.png" 
 export const SKAMTSHIRT = "/Backend/src/Merch/Skam/SkamTshirtDamGrå.png"
 export const YRTSHIRT = "/Backend/src/Merch/Young Royals/YRtshirts.png"
 

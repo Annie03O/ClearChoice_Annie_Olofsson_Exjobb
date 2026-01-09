@@ -3,8 +3,8 @@ import type { Category } from "../models/Types/sizeCalculator/Category";
 
 export function toCategory(s: Size): Category {
     return {
-        shoulder: s?.shoulderSize,
-        chest: s?.chestSize,
-        waist: s?.waistSize
+        shoulder: s?.shoulder,
+        chest: s?.chest,
+        waist: s?.waist
     }
 }

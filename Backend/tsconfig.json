@@ -7,7 +7,8 @@
     "strict": true,
     "skipLibCheck": true,
     "outDir": "./dist",
-    "typeRoots": ["./src/models/types","./src/models/objects", "./src/models/objects/sizeCalculator", "./node_modules/@types"]
+    "types": ["node"],
+    "typeRoots": ["./src/models/types", "./src/models/types/Order","./src/models/types/Payload", "./src/models/objects", "./src/models/objects/sizeCalculator", "./node_modules/@types"]
   },
   "include": ["src"]
 }

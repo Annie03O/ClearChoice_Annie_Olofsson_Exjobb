@@ -1,17 +1,16 @@
-import {  Link, useSearchParams } from "react-router-dom"
+
+import {  useSearchParams } from "react-router-dom"
 import { products } from "../../models/objects/products";
 import { useMemo } from "react";
 import { ProductCard } from "../ProductCard";
 import type { Product } from "../../models/Types/Search/Product";
-import "../../styles/Search/SearchResults.css" 
 
 
  type ProductPresentationProps = {
-     oneProduct: Product;
      addToCart: (p: Product) => void;
  }
 
-export const SearchResults = ({oneProduct, addToCart}: ProductPresentationProps) => {
+export const SearchResults = ({ addToCart}: ProductPresentationProps) => {
     const [params] = useSearchParams();
     const q = (params.get("q") ?? "").trim();
 
@@ -32,13 +31,15 @@ export const SearchResults = ({oneProduct, addToCart}: ProductPresentationProps)
     }
 
     return (
-        <section>
-            <h1 className="text-2xl">Results for "{q}"</h1>
-            <section className="searchResults">
-                {results.map((r) => (
-                    <ProductCard key={r.id} oneProduct={r} addToCart={addToCart} />
-                
-                ))}
+        <section className="flex flex-col">
+            <section className="border w-[80%]">            
+                <h1 className="text-2xl">Results for "{q}"</h1>
+                <section className="grid grid-cols-5 max-sm:grid-cols-1 gap-[10px] ml-[1rem] mt-[.5rem]">
+                    {results.map((r) => (
+                        <ProductCard key={r.id} oneProduct={r} searchResult={true} />
+                    
+                    ))}
+                </section>
             </section>
         </section>
     )

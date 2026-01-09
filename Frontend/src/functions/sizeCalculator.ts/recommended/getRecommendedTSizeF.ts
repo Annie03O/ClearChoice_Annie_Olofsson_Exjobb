@@ -21,26 +21,26 @@ export function getRecommendedTSizeF(
     const shouldersMax = (size as any).maxShoulders ?? size.shoulders;
 
     const chestMin = (size as any).minChest ?? size.maxChest; 
-    const chestMax = size.maxChest;
+    const chestMax = (size as any).maxChest ?? size.minChest;
 
     const waistMin = (size as any).minWaist ?? size.maxWaist;
-    const waistMax = size.maxWaist;
+    const waistMax = (size as any).maxWaist ?? size.minWaist;
 
     //s = 41
     // if sd = 41 < 40 ? 40 - 41 else 41 - 40 = 1
-    const shouldersDiff =
+    let shouldersDiff =
       userShoulders < shouldersMin ? (shouldersMin - userShoulders)
     : userShoulders > shouldersMax ? (userShoulders - shouldersMax)
     : 0;
 
     // c=89  
     //if cd = 89 < 88 ? 88 -89 else 89 -88 = 1 
-    const chestDiff =
+    let chestDiff =
       userChest < chestMin ? (chestMin - userChest)
     : userChest > chestMax ? (userChest - chestMax)
     : 0;
 
-    const waistDiff =
+    let waistDiff =
       userWaist < waistMin ? (waistMin - userWaist)
     : userWaist > waistMax ? (userWaist - waistMax)
     : 0;

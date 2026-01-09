@@ -1,6 +1,6 @@
 // src/hooks/useFSizeCalc.ts
 import { useState } from "react";
-import type { CalcTSizeFDTO } from "../../../../models/Types/sizeCalculator/DTO/Calc/calcTSizeFDTO";
+import type { CalcTSizeFDTO } from "../../../../models/Types/sizeCalculator/DTO/Calc/CalcTSizeFDTO";
 import { CalcTSizeContextF } from "../../../../models/Types/sizeCalculator/Context/Calc/CalcTSizeCtxF";
 
 export const CalcFSizeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

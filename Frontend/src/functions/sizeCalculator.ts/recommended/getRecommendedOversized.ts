@@ -21,10 +21,11 @@ export function getRecommendedOversized(
     const shouldersMax = (size as any).maxShoulders ?? size.shoulders;
 
     const chestMin = (size as any).minChest ?? size.maxChest; // om min saknas, anta “exakt max”
-    const chestMax = size.maxChest;
+    const chestMax = (size as any).maxChest ?? size.minChest;
+
 
     const waistMin = (size as any).minWaist ?? size.maxWaist;
-    const waistMax = size.maxWaist;
+    const waistMax = (size as any).maxWaist ?? size.minWaist;
 
     //s = 41
     // if sd = 41 < 40 ? 40 - 41 else 41 - 40 = 1

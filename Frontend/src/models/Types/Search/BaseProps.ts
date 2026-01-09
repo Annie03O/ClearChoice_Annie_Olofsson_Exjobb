@@ -1,3 +1,4 @@
+import type { Dispatch, SetStateAction } from "react";
 import type { Fetcher } from "./Fetcher";
 
 export type BaseProps<T> = {
@@ -11,6 +12,8 @@ export type BaseProps<T> = {
     debounceMS?: number;
     maxItems?: number;
     className?: string;
+    container?: boolean;
+    setContainer?: Dispatch<SetStateAction<boolean>>,
 };
 
 export type AutoCompleteProps<T> = BaseProps<T> & {

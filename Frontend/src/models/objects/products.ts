@@ -1,36 +1,75 @@
 import type { Product } from "../Types/Search/Product";
-import OTHHOODIEGRAY from "../../../../Backend/src/Merch/OTH/OTH Hoodie grå.png";
-import OCHOODIEBLACK  from "../../../../Backend/src/Merch/The OC/OC Hoodie svart.png";
-import SKAMHOODIEWHITE from "../../../../Backend/src/Merch/Skam/Skam Hoodie vit.png";
-import YRHOODIEBLACK  from "../../../../Backend/src/Merch/Young Royals/YRHoodie.png";
-import OTHSWEATSHIRTBLACK from "../../../../Backend/src/Merch/OTH/OTH sweatshirt svart.png";
-import OCSWEATSHIRTWHITE  from "../../../../Backend/src/Merch/The OC/OC Sweatshirt vit.png";
-import SKAMSWEATSHIRTGRAY from "../../../../Backend/src/Merch/Skam/Skam Sweatshirt Grå.png";
-import YRSWEATSHIRTBLACK from "../../../../Backend/src/Merch/Young Royals/YRsweatshirtsvart.png";
-import OTHTSHIRTBLACK from "../../../../Backend/src/Merch/OTH/OTH tshirt dam svart.png";
-import OCTSHIRTWHITE from "../../../../Backend/src/Merch/The OC/OC tshirt herr vit.png";
-import SKAMTSHIRTGRAY from "../../../../Backend/src/Merch/Skam/SkamTshirtDamGrå.png";
-import YRTSHIRTGRAY  from "../../../../Backend/src/Merch/Young Royals/YRtshirts.png";
-import OCHOODIEWHITE from "../../../../Backend/src/Merch/The OC/OC Hoodie vit.png";
-import { OTHSWEATSHIRTWHITE } from "./imgVariables";
+import OTHHOODIEGRAY from "../../../../Backend/src/images/OTH/oth-hoodie-grå.png";
+import OTHHOODIEBLACK from "../../../../Backend/src/images/OTH/oth-hoodie-svart.png";
+import OTHHOODIEWHITE from "../../../../Backend/src/images/OTH/oth-hoodie-vit.png";
+import OCHOODIEBLACK  from "../../../../Backend/src/images/The OC/oc-hoodie-svart.png";
+import OCHOODIEWHITE  from "../../../../Backend/src/images/The OC/oc-hoodie-vit.png";
+import OCHOODIEGREY  from "../../../../Backend/src/images/The OC/oc-hoodie-grå.png";
+import SKAMHOODIEWHITE from "../../../../Backend/src/images/Skam/skam-hoodie-vit.png";
+import SKAMHOODIEBLACK from "../../../../Backend/src/images/Skam/skam-hoodie-svart.png";
+import SKAMHOODIEGREY from "../../../../Backend/src/images/Skam/skam-hoodie-grå.png";
+import YRHOODIEBLACK  from "../../../../Backend/src/images/Young Royals/yr-hoodie-svart.png";
+import YRHOODIEWHITE  from "../../../../Backend/src/images/Young Royals/yr-hoodie-vit.png";
+import YRHOODIEGREY  from "../../../../Backend/src/images/Young Royals/yr-hoodie-grå.png";
+import OTHSWEATSHIRTBLACK from "../../../../Backend/src/images/OTH/oth-sweatshirt-svart.png";
+import OTHSWEATSHIRTGRAY from "../../../../Backend/src/images/OTH/oth-sweatshirt-grå.png";
+import OTHSWEATSHIRTWHITE from "../../../../Backend/src/images/OTH/oth-sweatshirt-vit.png";
+import OCSWEATSHIRTWHITE  from "../../../../Backend/src/images/The OC/oc-sweatshirt-vit.png";
+import OCSWEATSHIRTBLACK  from "../../../../Backend/src/images/The OC/oc-sweatshirt-svart.png";
+import OCSWEATSHIRTGRAY  from "../../../../Backend/src/images/The OC/oc-sweatshirt-grå.png";
+import SKAMSWEATSHIRTGRAY from "../../../../Backend/src/images/Skam/skam-sweatshirt-grå.png";
+import SKAMSWEATSHIRTWHITE from "../../../../Backend/src/images/Skam/skam-sweatshirt-vit.png";
+import SKAMSWEATSHIRTBLACK from "../../../../Backend/src/images/Skam/skam-sweatshirt-svart.png";
+import YRSWEATSHIRTBLACK from "../../../../Backend/src/images/Young Royals/yr-sweatshirt-svart.png";
+import YRSWEATSHIRTWHITE from "../../../../Backend/src/images/Young Royals/yr-sweatshirt-vit.png";
+import YRSWEATSHIRTGREY from "../../../../Backend/src/images/Young Royals/yr-sweatshirt-grå.png";
+import OTHTSHIRTBLACKF from "../../../../Backend/src/images/OTH/oth-tshirt-dam-svart.png";
+import OTHTSHIRTGREYF from "../../../../Backend/src/images/OTH/oth-tshirt-dam-grå.png";
+import OTHTSHIRTWHITEF from "../../../../Backend/src/images/OTH/oth-tshirt-dam-vit.png";
+import OTHTSHIRTBLACKM from "../../../../Backend/src/images/OTH/oth-tshirt-herr-svart.png";
+import OTHTSHIRTGREYM from "../../../../Backend/src/images/OTH/oth-tshirt-herr-grå.png";
+import OTHTSHIRTWHITEM from "../../../../Backend/src/images/OTH/oth-tshirt-herr-vit.png";
+import OCTSHIRTWHITEF from "../../../../Backend/src/images/The OC/oc-tshirt-dam-vit.png";
+import OCTSHIRTGREYF from "../../../../Backend/src/images/The OC/oc-tshirt-dam-grå.png";
+import OCTSHIRTBLACKF from "../../../../Backend/src/images/The OC/oc-tshirt-dam-svart.png";
+import OCTSHIRTWHITEM from "../../../../Backend/src/images/The OC/oc-tshirt-herr-vit.png";
+import OCTSHIRTGREYM from "../../../../Backend/src/images/The OC/oc-tshirt-herr-grå.png";
+import OCTSHIRTBLACKM from "../../../../Backend/src/images/The OC/oc-tshirt-herr-svart.png";
+import SKAMTSHIRTWHITEF from "../../../../Backend/src/images/Skam/skam-tshirt-dam-vit.png";
+import SKAMTSHIRTGRAYF from "../../../../Backend/src/images/Skam/skam-tshirt-dam-grå.png";
+import SKAMTSHIRTBLACKF from "../../../../Backend/src/images/Skam/skam-tshirt-dam-svart.png";
+import SKAMTSHIRTWHITEM from "../../../../Backend/src/images/Skam/skam-tshirt-dam-vit.png";
+import SKAMTSHIRTGRAYM from "../../../../Backend/src/images/Skam/skam-tshirt-herr-grå.png";
+import SKAMTSHIRTBLACKM from "../../../../Backend/src/images/Skam/skam-tshirt-herr-svart.png";
+import YRTSHIRTWHITEF  from "../../../../Backend/src/images/Young Royals/yr-tshirts-dam-vit.png";
+import YRTSHIRTGRAYF  from "../../../../Backend/src/images/Young Royals/yr-tshirts-dam-grå.png";
+import YRTSHIRTBLACKF  from "../../../../Backend/src/images/Young Royals/yr-tshirts-dam-svart.png";
+import YRTSHIRTWHITEM  from "../../../../Backend/src/images/Young Royals/yr-tshirts-herr-vit.png";
+import YRTSHIRTGRAYM  from "../../../../Backend/src/images/Young Royals/yr-tshirts-herr-grå.png";
+import YRTSHIRTBLACKM  from "../../../../Backend/src/images/Young Royals/yr-tshirts-herr-svart.png";
 
 const othClass = "othBlue";
 const ocClass = "ocBeige";
 const skamClass = "skamYellow";
 const yrClass ="yrPurple"; 
 
+
+
 export const products: Product[] = [
     {
         id: "91c20ef0-cf61-4ee1-a746-1ea1d6384244",
         label: "One Tree Hill Hoodie",
         fandom: "One Tree Hill",
-        black: "",
-        grey: OTHHOODIEGRAY,
-        white: "",
+        images: {  
+            white: OTHHOODIEWHITE,
+            grey: OTHHOODIEGRAY,
+            black: OTHHOODIEBLACK,
+        },
+        availableColor: [],
         price: 20,
         path: "/:id",
         description: "This hoodie is made from a soft cotton and polyester blend that combines comfort, warmth, and durability. The brushed interior gives it a cozy feel, perfect for everyday wear or lounging.",
-        fit: "Oversized",
+        model: "Unisex",
         class: othClass,
         washing: {
             temp: 30,
@@ -43,15 +82,18 @@ export const products: Product[] = [
     },
     {
         id: "986a3e78-91c8-47b3-b5aa-fda66a776268",
-        label: "The OC Hoodie",
-        fandom: "The OC",
-        black: OCHOODIEBLACK,
-        white: OCHOODIEWHITE,
-        grey:"",
+        label: "The O.C Hoodie",
+        fandom: "The O.C",
+        images: {  
+            white: OCHOODIEWHITE,
+            grey: OCHOODIEGREY,
+            black: OCHOODIEBLACK,
+        },
+        availableColor: ["white", "grey", "black"],
         price: 20,
         path: "/The_OC_Hoodie",
         description: "This hoodie is made from a soft cotton and polyester blend that combines comfort, warmth, and durability. The brushed interior gives it a cozy feel, perfect for everyday wear or lounging.",
-        fit: "Oversized",
+        model: "Unisex",
         class: ocClass,
         washing: {
             temp: 30,
@@ -66,13 +108,16 @@ export const products: Product[] = [
         id: "d85407bf-400e-406f-bd13-26cc5fbf6e79",
         label: "Skam Hoodie",
         fandom: "Skam",
-        white: SKAMHOODIEWHITE,
-        grey: "",
-        black: "",
+        images: {  
+            white: SKAMHOODIEWHITE,
+            grey: SKAMHOODIEGREY,
+            black: SKAMHOODIEBLACK,
+        },
+        availableColor: ["white", "grey", "black"],
         price: 20,
         path: "/Skam_Hoodie",
         description: "This hoodie is made from a soft cotton and polyester blend that combines comfort, warmth, and durability. The brushed interior gives it a cozy feel, perfect for everyday wear or lounging.",
-        fit: "Oversized",
+        model: "Unisex",
         class: skamClass,
         washing: {
             temp: 30,
@@ -87,13 +132,16 @@ export const products: Product[] = [
         id: "1adaaa10-c02b-493d-a7ce-027801551d40",
         label: "Young Royals Hoodie",
         fandom: "Young Royals",
-        white: "",
-        grey: "",
-        black: YRHOODIEBLACK,
+         images: {  
+            white: YRHOODIEWHITE,
+            grey: YRHOODIEGREY,
+            black: YRHOODIEBLACK,
+        },
+        availableColor: ["white", "grey", "black"],
         price: 20,
         path: "/Young_Royals_Hoodie",
         description: "This hoodie is made from a soft cotton and polyester blend that combines comfort, warmth, and durability. The brushed interior gives it a cozy feel, perfect for everyday wear or lounging.",
-        fit: "Oversized",
+        model: "Unisex",
         class: yrClass,
         washing: {
             temp: 30,
@@ -108,13 +156,16 @@ export const products: Product[] = [
         id: "ded21a6c-ada4-4b1e-98c8-ce80f77638e4",
         label: "One Tree Hill Sweatshirt",
         fandom: "One Tree Hill",
-        white: OTHSWEATSHIRTWHITE,
-        grey: "",
-        black: OTHSWEATSHIRTBLACK,
+        images: {
+            white: OTHSWEATSHIRTWHITE,
+            grey: OTHSWEATSHIRTGRAY,
+            black: OTHSWEATSHIRTBLACK,
+        },
+        availableColor: ["white", "grey", "black"],
         price: 20,
         path: "OTH_Sweatshirt",
         description: "This sweatshirt is made from a soft cotton and polyester blend that combines comfort, warmth, and durability. The brushed interior gives it a cozy feel, perfect for everyday wear or lounging.",
-        fit: "Oversized",
+        model: "Unisex",
         class: othClass,
         washing: {
             temp: 30,
@@ -127,15 +178,18 @@ export const products: Product[] = [
     },
     {
         id: "f2a0d44e-0de7-4272-803d-8037509eb87c",
-        label: "The OC Sweatshirt",
-        fandom: "The OC",
-        white: OCSWEATSHIRTWHITE,
-        grey: "",
-        black: "",
+        label: "The O.C Sweatshirt",
+        fandom: "The O.C",
+        images: {
+            white: OCSWEATSHIRTWHITE,
+            grey: OCSWEATSHIRTGRAY,
+            black: OCSWEATSHIRTBLACK,
+        },
+        availableColor: ["white", "grey", "black"],
         price: 20,
         path: "OC_Sweatshirt",
         description: "This sweatshirt is made from a soft cotton and polyester blend that combines comfort, warmth, and durability. The brushed interior gives it a cozy feel, perfect for everyday wear or lounging.",
-        fit: "Oversized",
+        model: "Unisex",
         class: ocClass,
         washing: {
             temp: 30,
@@ -150,13 +204,16 @@ export const products: Product[] = [
         id: "bb010be2-899c-419e-a649-49dd441c9723",
         label: "Skam Sweatshirt",
         fandom: "Skam",
-        white: "",
-        grey: SKAMSWEATSHIRTGRAY,
-        black: "",        
+        images: {
+            white: SKAMSWEATSHIRTWHITE,
+            grey: SKAMSWEATSHIRTGRAY,
+            black: SKAMSWEATSHIRTBLACK,
+        },
+        availableColor: ["white", "grey", "black"],
         price: 20,
         path: "Skam_Sweatshirt",
         description: "This sweatshirt is made from a soft cotton and polyester blend that combines comfort, warmth, and durability. The brushed interior gives it a cozy feel, perfect for everyday wear or lounging.",
-        fit: "Oversized",
+        model: "Unisex",
         class: skamClass,
         washing: {
             temp: 30,
@@ -171,13 +228,16 @@ export const products: Product[] = [
         id: "a4d84529-a4fc-44aa-ae52-0e04e8f7d78f",
         label: "Young Royals Sweatshirt",
         fandom: "Young Royals",
-        white: "",
-        grey: "",
-        black: YRSWEATSHIRTBLACK,
+        images: {
+            white: YRSWEATSHIRTWHITE,
+            grey: YRSWEATSHIRTGREY,
+            black: YRSWEATSHIRTBLACK,
+        },
+        availableColor: ["white", "grey", "black"],
         price: 20,
         path: "Young_Royals_Sweatshirt",
         description: "This sweatshirt is made from a soft cotton and polyester blend that combines comfort, warmth, and durability. The brushed interior gives it a cozy feel, perfect for everyday wear or lounging.",
-        fit: "Oversized",
+        model: "Unisex",
         class: yrClass,
         washing: {
             temp: 30,
@@ -190,15 +250,18 @@ export const products: Product[] = [
     }, 
     {
          id: "78657548-29e1-43b3-976e-d5b3fa24f276", 
-         label: "One Tree Hill Tshirt", 
+         label: "One Tree Hill Women's Tshirt ", 
          fandom: "One Tree Hill", 
-         white: "",
-         grey: "",
-         black: OTHTSHIRTBLACK, 
+         images: {
+            white: OTHTSHIRTWHITEF,
+            grey: OTHTSHIRTGREYF,
+            black: OTHTSHIRTBLACKF,
+         }, 
+         availableColor: ["white", "grey", "black"],
          price: 15, 
-         path: "/OTH_Tshirt", 
+         path: "/OTH_Women's_Tshirt", 
          description: "This T-shirt is made from 100% premium cotton for a soft and breathable feel. The fabric ensures lasting comfort and durability, making it perfect for everyday wear.", 
-         fit: "Regular",
+         model: "Women",
          class: othClass,
          washing: {
             temp: 30,
@@ -211,15 +274,18 @@ export const products: Product[] = [
     },
     {
          id: "e970ae69-57da-4afa-a61b-312d450748be", 
-         label: "The O.C Tshirt", 
+         label: "The O.C Women's Tshirt", 
          fandom: "The O.C", 
-         white: OCTSHIRTWHITE, 
-         grey: "",
-         black: "",
+         images: {
+            white: OCTSHIRTWHITEF,
+            grey: OCTSHIRTGREYF,
+            black: OCTSHIRTBLACKF,
+         }, 
+         availableColor: ["white", "grey", "black"],
          price: 15, 
-         path: "/OC_Tshirt", 
+         path: "/The_OC_Women's_Tshirt", 
          description: "This T-shirt is made from 100% premium cotton for a soft and breathable feel. The fabric ensures lasting comfort and durability, making it perfect for everyday wear.", 
-         fit: "Regular",
+         model: "Women",
          class: ocClass,
          washing: {
             temp: 30,
@@ -232,15 +298,18 @@ export const products: Product[] = [
     },
     {
          id: "f97a9dec-7aca-4a79-85d3-0901752eb7a4", 
-         label: "Skam Tshirt", 
+         label: "Skam Women's Tshirt", 
          fandom: "Skam", 
-         white: "",
-         grey: SKAMTSHIRTGRAY, 
-         black: "",
+         images: {
+            white: SKAMTSHIRTWHITEF,
+            grey: SKAMTSHIRTGRAYF,
+            black: SKAMTSHIRTBLACKF,
+         }, 
+          availableColor: ["white", "grey", "black"],         
          price: 15, 
-         path: "/Skam_Tshirt", 
+         path: "/Skam_Women's_Tshirt", 
          description: "This T-shirt is made from 100% premium cotton for a soft and breathable feel. The fabric ensures lasting comfort and durability, making it perfect for everyday wear.", 
-         fit: "Regular",
+         model: "Women",
          class: skamClass,
          washing: {
             temp: 30,
@@ -253,15 +322,18 @@ export const products: Product[] = [
     },
     {
          id: "0997addd-d7b1-4b47-bd5c-c740b33270ac", 
-         label: "Young Royals Tshirt", 
+         label: "Young Royals Women's Tshirt", 
          fandom: "Young Royals", 
-         white: "",
-         grey: YRTSHIRTGRAY, 
-         black: "",
+         images: {
+            white: YRTSHIRTWHITEF,
+            grey: YRTSHIRTGRAYF,
+            black: YRTSHIRTBLACKF,
+         }, 
+         availableColor: ["white", "grey", "black"],
          price: 15, 
-         path: "/Young_Royals_Tshirt", 
+         path: "/Young_Royals_Women's_Tshirt", 
          description: "This T-shirt is made from 100% premium cotton for a soft and breathable feel. The fabric ensures lasting comfort and durability, making it perfect for everyday wear.", 
-         fit: "Regular",
+         model: "Women",
          class: yrClass,
          washing: {
             temp: 30,
@@ -272,4 +344,100 @@ export const products: Product[] = [
             dryClean: false,
          },
     },
+    {
+         id: "a49a5a2b-8175-4858-a878-2dd86d4ac245", 
+         label: "One Tree Hill Men's Tshirt ", 
+         fandom: "One Tree Hill", 
+         images: {
+            white: OTHTSHIRTWHITEM,
+            grey: OTHTSHIRTGREYM,
+            black: OTHTSHIRTBLACKM,
+         }, 
+         availableColor: ["white", "grey", "black"], 
+         price: 15, 
+         path: "/OTH_Men's_Tshirt", 
+         description: "This T-shirt is made from 100% premium cotton for a soft and breathable feel. The fabric ensures lasting comfort and durability, making it perfect for everyday wear.", 
+         model: "Man",
+         class: othClass,
+         washing: {
+            temp: 30,
+            similarColors: true,
+            canBleach: false,
+            dry: "Tuble dry low or hang to dry",
+            iron: "Iron on low heat if needed (avoid print)",
+            dryClean: false,
+         },
+    },
+    {
+         id: "5ba86ff2-b5dc-406d-9e8c-6863b9d1c97c", 
+         label: "The O.C Men's Tshirt", 
+         fandom: "The O.C", 
+         images: {
+            white: OCTSHIRTWHITEM,
+            grey: OCTSHIRTGREYM,
+            black: OCTSHIRTBLACKM,
+         }, 
+         availableColor: ["white", "grey", "black"],
+         price: 15, 
+         path: "/The_OC_Men's_Tshirt", 
+         description: "This T-shirt is made from 100% premium cotton for a soft and breathable feel. The fabric ensures lasting comfort and durability, making it perfect for everyday wear.", 
+         model: "Man",
+         class: ocClass,
+         washing: {
+            temp: 30,
+            similarColors: true,
+            canBleach: false,
+            dry: "Tuble dry low or hang to dry",
+            iron: "Iron on low heat if needed (avoid print)",
+            dryClean: false,
+         },
+    },
+    {
+         id: "2167001b-26af-4893-ade6-c418ca5eb981", 
+         label: "Skam Men's Tshirt", 
+         fandom: "Skam", 
+         images: {
+            white: SKAMTSHIRTWHITEM,
+            grey: SKAMTSHIRTGRAYM,
+            black: SKAMTSHIRTBLACKM,
+         }, 
+         availableColor: ["white", "grey", "black"],
+         price: 15, 
+         path: "/Skam_Men's_Tshirt", 
+         description: "This T-shirt is made from 100% premium cotton for a soft and breathable feel. The fabric ensures lasting comfort and durability, making it perfect for everyday wear.", 
+         model: "Man",
+         class: skamClass,
+         washing: {
+            temp: 30,
+            canBleach: false,
+            similarColors: true,
+            dry: "Tuble dry low or hang to dry",
+            iron: "Iron on low heat if needed (avoid print)",
+            dryClean: false,
+         },
+    },
+    {
+         id: "bd91efdf-acc4-40db-af4e-9209b95eaacf", 
+         label: "Young Royals Men's Tshirt", 
+         fandom: "Young Royals", 
+         images: {
+            white: YRTSHIRTWHITEM,
+            grey: YRTSHIRTGRAYM,
+            black: YRTSHIRTBLACKM,
+         }, 
+        availableColor: ["white", "grey", "black"],        
+        price: 15, 
+         path: "/Young_Royals_Men's_Tshirt", 
+         description: "This T-shirt is made from 100% premium cotton for a soft and breathable feel. The fabric ensures lasting comfort and durability, making it perfect for everyday wear.", 
+         model: "Man",
+         class: yrClass,
+         washing: {
+            temp: 30,
+            canBleach: false,
+            similarColors: true,
+            dry: "Tuble dry low or hang to dry",
+            iron: "Iron on low heat if needed (avoid print)",
+            dryClean: false,
+         },
+       }
 ]

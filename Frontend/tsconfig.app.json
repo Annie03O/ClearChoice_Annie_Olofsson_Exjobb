@@ -23,5 +23,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src", "../Backend/src/models/types/Order", "../Backend/src/middlewares/initialPaymentStatus.ts"]
 }

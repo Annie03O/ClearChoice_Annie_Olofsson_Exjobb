@@ -1,61 +1,61 @@
-import express, { NextFunction } from "express";
+import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import authRouter from "./routes/auth";
-import { saveSizeRouter } from "./routes/saveSize";
-import { requireAuth } from "./middlewares/Auth";
+import authRoutes from "./routes/auth";
+import orderRouter from "./routes/Order";
+import { searchRouter } from "./routes/search";
+import { verifyToken } from "./middlewares/authOptional";
+import path from "path";
 
 dotenv.config();
+const app = express();
 
-export const app = express();
-const PORT = process.env.PORT || 4000;
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true,
+}));
+app.options("*", cors({ origin: "http://localhost:5173", credentials: true }));
 
-app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(express.json());
 
-// Health check
-app.get("/health", (_req, res) => res.json({ ok: true }));
-
-// Montera routern
-app.use(authRouter);
-
-app.use("/api/auth", requireAuth, saveSizeRouter)
-
-console.log("[server] auth router mounted under /api/auth");
-
-app.post("/api/auth/login", (_req, res) => {
-  return res.json({ debug: "server.ts direct route hit" });
+// (valfritt) debug: se att requests kommer in
+app.use((req, _res, next) => {
+  console.log("[REQ]", req.method, req.url);
+  next();
 });
 
+// authOptional “globalt” (som du kör nu)
+app.use((req: any, _res, next) => {
+  const token = req.cookies?.accessToken; // se till att cookie heter exakt så
+  if (token) {
+    try {
+      const payload = verifyToken(token);
+      req.user = { id: payload.id, email: payload.email, name: payload.name };
+    } catch {}
+  }
+  next();
+});
 
-const isProd = process.env.NODE_ENV === 'production';
-if (isProd) {
-  app.set('trust proxy', 1);
-  app.use((req, res, next) => {
-    const xfProto = (req.headers['x-forwarded-proto'] as string) || '';
-    if (xfProto !== 'https') {
-      return res.redirect('https://' + req.headers.host + req.url);
-    }
-    next();
-  });
-}  
+// lägg health TIDIGT så du kan testa enkelt
+app.get("/health", (_req, res) => res.status(200).send("ok-clearchoice"));
 
-app.use("/api/auth", saveSizeRouter);
-
-// 404-fångare
+app.use("/api/auth", authRoutes);
+app.use("/api/search", searchRouter);
+app.use("/api", orderRouter);
+app.use("/static", express.static(path.join(process.cwd(), "src/Merch")))
+// 404 sist
 app.use((_req, res) => res.status(404).json({ error: "Not found" }));
 
-// DB & start
+const PORT = Number(process.env.PORT) || 4000;
+
 mongoose
   .connect(process.env.MONGO_URL as string)
   .then(() => {
     console.log("Connected to MongoDB");
-    app.listen(PORT, () =>
-      console.log(`Server running on http://localhost:${PORT}`)
-    );
+    app.listen(PORT, () => console.log(`API running on http://localhost:${PORT}`));
   })
   .catch((err) => {
     console.error("MongoDB error", err);

@@ -1,73 +1,66 @@
-import type { CartItem } from "../models/Types/Cart/CartAmount";
-import type { Product } from "../models/Types/Search/Product";
+import type {  CartItem } from "../models/Types/Cart/CartItem";
 
-export enum ActionTypes {
-    ADDED,
-    REMOVED,
-    INCREASED,
-    DECREASED
+export type CartState = {
+    items: CartItem[],
 }
+export type CartAction =
+  | { type: "ADD_ITEM"; payload: Omit<CartItem, "qty">; qty?: number}
+  | { type: "INCREASE"; productId: string }
+  | { type: "DECREASE"; productId: string }
+  | { type: "REMOVE_ITEM"; id: string}
+  | { type: "SET_QTY"; id: string; qty: number}
+  | { type: "CLEAR"}
 
-type Action = {
-    type: ActionTypes,
-    payload: string,
-}
 
-export const CartReducer = (cartItems: CartItem[], action: Action) => {
-    switch (action.type) {
-        case ActionTypes.ADDED: {
-            const productToAdd = JSON.parse(action.payload) as Product;
-            const foundProduct = cartItems.find(
-                (ci) => ci.product.id === productToAdd.id
-            );
 
-            if (!foundProduct) {
-                return [...cartItems, {product: productToAdd, amount: 1}];
-            } else {
-                return cartItems.map((ci) => {
-                    if (ci.product.id === productToAdd.id) {
-                        return {...ci, amount: ci.amount + 1};
-                    }
-                    return ci;
-                })
-            }
-        }
+export function cartReducer(state: CartState, action: CartAction): CartState {
+  switch (action.type) {
+    case "ADD_ITEM": {
+      const qtyToAdd = action.qty ?? 1;
+      const id = action.payload.id;
 
-        case ActionTypes.INCREASED: {
-            return cartItems.map((ci) => {
-                if (ci.product.id === action.payload) {
-                    return {...ci, amount: ci.amount + 1}
-                }
-                return ci;
-            });
-        }
+      const existing = state.items.find((i) => i.id === id);
 
-        case ActionTypes.DECREASED: {
-            const foundProduct = cartItems.find(
-                (ci) => ci.product.id === action.payload
-            );
+      
+      if (existing) {
+        return {
+          items: state.items.map((i) =>
+            i.id === id ? {...i, qty: i.qty = + qtyToAdd}: i
+          ),
+        };
+      }
 
-            if (!foundProduct) {
-                return cartItems;
-            }
-
-            if (foundProduct.amount > 1) {
-                return cartItems.map((ci) => {
-                    if (ci.product.id === action.payload) {
-                        return {...ci, amount: ci.amount - 1}
-                    }
-                    return ci;
-                });
-            } else {
-                return cartItems.filter((ci) => ci.product.id !== action.payload);
-            }
-        }
-
-        case ActionTypes.REMOVED: {
-            return cartItems.filter((ci) => ci.product.id !== action.payload);
-        }
-
-        default:
-            return cartItems;
+      return { items: [...state.items, { ...action.payload, qty: qtyToAdd}] };
     }
+
+    case "INCREASE": 
+       return {
+        items: state.items.map(i =>
+          i.product.id === action.productId ? {...i, qty: i.qty + 1} : i
+        )
+       }
+
+    case "DECREASE": 
+       return {
+        items: state.items.map(i =>
+          i.product.id === action.productId ? {...i, qty: i.qty - 1} : i
+        ).filter(i => i.qty > 0)
+       }
+
+    case "REMOVE_ITEM":
+      return { 
+        items: state.items.filter((i) => i.id !== action.id ) };
+
+    case "CLEAR":
+      return { items: [] };
+
+    case "SET_QTY":
+      return { 
+        items: state.items.map((i) =>
+          i.id === action.id ? {...i, qty: Math.max(1, action.qty)} : i
+        ) };
+
+    default:
+      return state;
+  }
 }

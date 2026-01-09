@@ -5,6 +5,7 @@ type RowNum = readonly [string, number];
 
 
 export const SizeCard = ({ title, size }: { title: string; size: Category }) => {
+   
   // Bygg rader (visa bara de som finns)
   const allRows = [
     ["Shoulders", size.shoulder] as const,
@@ -19,6 +20,7 @@ const rows = (allRows as readonly Row[]).filter(
     `${new Intl.NumberFormat("sv-SE", { maximumFractionDigits: 1 }).format(v)} cm`;
 
   if (rows.length === 0) return null;
+
 
   return (
     <section>

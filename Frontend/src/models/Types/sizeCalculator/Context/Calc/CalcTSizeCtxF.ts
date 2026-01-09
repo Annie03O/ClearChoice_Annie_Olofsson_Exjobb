@@ -1,6 +1,7 @@
 import type React from "react";
 import { createContext } from "react";
-import type { CalcTSizeFDTO } from "../../DTO/Calc/calcTSizeFDTO";
+import type { CalcTSizeFDTO } from "../../DTO/Calc/CalcTSizeFDTO";
+
 
 type CalcFSizeCtx = {
   size: CalcTSizeFDTO

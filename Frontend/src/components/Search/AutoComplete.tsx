@@ -1,8 +1,7 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useDebounceValue } from "../../hooks/useDebouncedValue";
 import type { AutoCompleteProps } from "../../models/Types/Search/BaseProps";
-import { Link } from "react-router-dom";
-import "../../styles/Search/Autocomplete.css"
+import { useNavigate } from "react-router-dom";
 
 export function AutoComplete<T>(props: AutoCompleteProps<T>) {
   const {
@@ -10,7 +9,7 @@ export function AutoComplete<T>(props: AutoCompleteProps<T>) {
     onChange,
     onSelect,
     getItemLabel,
-    getItemLink = () => undefined, // safe default
+    getItemLink = () => undefined,
     placeholder = "Search..",
     minLength = 1,
     debounceMS = 250,
@@ -18,7 +17,9 @@ export function AutoComplete<T>(props: AutoCompleteProps<T>) {
     multiple,
     links,
     fetchSuggestions,
-    className
+    className,
+    container,
+    setContainer,
   } = props;
 
   const inputId = useId();
@@ -30,27 +31,38 @@ export function AutoComplete<T>(props: AutoCompleteProps<T>) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  useRef<Map<string, T[]>>(new Map());
+  const navigate = useNavigate();
+  const containerRef = useRef<HTMLsectionElement | null>(null);
+
+  // Hindrar att listan öppnar igen direkt efter att man valt ett item
+  const suppressOpenRef = useRef(false);
 
   const debouncedQuery = useDebounceValue(value, debounceMS);
 
-  // Stäng vid klick utanför (med korrekt cleanup)
+  const closeList = () => {
+    suppressOpenRef.current = true;
+    setOpen(false);
+    setHighlighted(-1);
+  };
+
+  // Stäng vid klick utanför
   useEffect(() => {
-    const onDocClick = (e: MouseEvent) => {
+    const onDocMouseDown = (e: MouseEvent) => {
       if (!containerRef.current) return;
       if (!containerRef.current.contains(e.target as Node)) {
         setOpen(false);
         setHighlighted(-1);
       }
     };
-    document.addEventListener("mousedown", onDocClick);
-    return () => document.removeEventListener("mousedown", onDocClick);
+
+    document.addEventListener("mousedown", onDocMouseDown);
+    return () => document.removeEventListener("mousedown", onDocMouseDown);
   }, []);
 
   // Hämta/filtera items
   useEffect(() => {
-    const q = debouncedQuery.trim();
+    const q = (debouncedQuery ?? "").trim();
+
     if (q.length < minLength) {
       setItems([]);
       setOpen(false);
@@ -60,15 +72,26 @@ export function AutoComplete<T>(props: AutoCompleteProps<T>) {
       return;
     }
 
+    // Om vi precis valde ett item: öppna inte igen på nästa effect-körning
+    if (suppressOpenRef.current) {
+      suppressOpenRef.current = false;
+      return;
+    }
+
+    // FETCH
     if (typeof fetchSuggestions === "function") {
       const ac = new AbortController();
+
       (async () => {
         try {
           setLoading(true);
           setError(null);
+
           const response = await fetchSuggestions(q, ac.signal);
-          setItems(response.slice(0, maxItems));
-          setOpen(response.length > 0);
+          const sliced = response.slice(0, maxItems);
+
+          setItems(sliced);
+          setOpen(sliced.length > 0);
         } catch (err: any) {
           if (err?.name !== "AbortError") {
             setError(err?.message ?? "Something went wrong");
@@ -79,31 +102,49 @@ export function AutoComplete<T>(props: AutoCompleteProps<T>) {
           setLoading(false);
         }
       })();
+
       return () => ac.abort();
     }
 
+    // LOCAL LIST: multiple
     if (Array.isArray(multiple)) {
       const filtered = multiple.filter((it) =>
         getItemLabel(it).toLowerCase().includes(q.toLowerCase())
       );
-      setItems(filtered.slice(0, maxItems));
-      setOpen(filtered.length > 0);
+      const sliced = filtered.slice(0, maxItems);
+
+      setItems(sliced);
+      setOpen(sliced.length > 0);
       setError(null);
       setLoading(false);
+      return;
     }
 
+    // LOCAL LIST: links
     if (Array.isArray(links)) {
       const filtered = links.filter((l) =>
         (getItemLink(l as unknown as T) ?? "")
           .toLowerCase()
           .includes(q.toLowerCase())
       );
-      setItems(filtered.slice(0, maxItems) as unknown as T[]);
-      setOpen(filtered.length > 0);
+      const sliced = filtered.slice(0, maxItems) as unknown as T[];
+
+      setItems(sliced);
+      setOpen(sliced.length > 0);
       setError(null);
       setLoading(false);
+      return;
     }
-  }, [debouncedQuery, fetchSuggestions, maxItems, minLength, getItemLabel, getItemLink, multiple, links]);
+  }, [
+    debouncedQuery,
+    fetchSuggestions,
+    maxItems,
+    minLength,
+    getItemLabel,
+    getItemLink,
+    multiple,
+    links,
+  ]);
 
   const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (!open && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
@@ -137,7 +178,13 @@ export function AutoComplete<T>(props: AutoCompleteProps<T>) {
       case "Enter":
         if (open && highlighted >= 0 && items[highlighted]) {
           e.preventDefault();
-          selectItem(items[highlighted]);
+          const item = items[highlighted];
+          const href = getItemLink(item);
+
+          closeList();
+          setContainer?.(false);
+          onSelect(item);
+          if (href) navigate(href);
         }
         break;
       case "Escape":
@@ -147,39 +194,16 @@ export function AutoComplete<T>(props: AutoCompleteProps<T>) {
     }
   };
 
-  const selectItem = (item: T) => {
-    onSelect(item);
-    setOpen(false);
-    setHighlighted(-1);
-  };
-
-  // Rendera labeln med highlight — hela labeln är klickbar länk
-  const renderHighlightedLabel = (label: string, href?: string) => {
-    const q = (value ?? "").trim();
-    if (!href) return <span>{label}</span>;
-    if (!q) return <Link to={href}>{label}</Link>;
-
-    const lower = label.toLowerCase();
-    const qi = q.toLowerCase();
-    const idx = lower.indexOf(qi);
-    if (idx === -1) return <Link to={href}>{label}</Link>;
-
-    return (
-      <Link to={href} onClick={(e) => e.stopPropagation()}>
-        {label.slice(0, idx)}
-        <mark>{label.slice(idx, idx + q.length)}</mark>
-        {label.slice(idx + q.length)}
-      </Link>
-    );
-  };
-
   const styles = useMemo(
     () => ({
       container: "relative inline-block w-full",
-      input: "w-full rounded-lg border px-3 py-2 outline-none focus:ring",
+      input:
+        "md:w-[clamp(100px,20vw,450px)] w-full rounded-lg border px-[clamp(15px,1.1vw,30px)] py-[clamp(5px,.5vw,30px)] outline-none focus:ring text-black text-[clamp(12px,1.1vw,30px)]",
       panel:
         "absolute z-50 mt-1 w-full rounded-lg border bg-white shadow-lg overflow-auto max-h-64",
-      row: "px-3 py-2 cursor-pointer",
+      panelInline:
+        "relative z-50 mt-1 w-full rounded-lg border bg-white shadow-lg overflow-auto max-h-64",
+      row: "px-3 py-2 cursor-pointer text-[clamp(12px,1.1vw,30px)]",
       rowActive: "px-3 py-2 cursor-pointer bg-gray-100",
       empty: "px-3 py-2 text-sm text-gray-500",
       loading: "px-3 py-2 text-sm text-gray-500 italic",
@@ -191,10 +215,12 @@ export function AutoComplete<T>(props: AutoCompleteProps<T>) {
   const activeId =
     highlighted >= 0 ? `${listBoxId}-opt-${highlighted}` : undefined;
 
+  const panelClass = container ? styles.panelInline : styles.panel;
+
   return (
     <section
       ref={containerRef}
-      className={(styles.container + (className ? `${className}` : ""))}
+      className={styles.container + (className ? ` ${className}` : "")}
     >
       <input
         id={inputId}
@@ -211,14 +237,14 @@ export function AutoComplete<T>(props: AutoCompleteProps<T>) {
         aria-activedescendant={activeId}
         aria-haspopup="listbox"
         autoComplete="off"
-      /> 
+      />
 
       {open && (
         <ul
           id={listBoxId}
           role="listbox"
           aria-labelledby={inputId}
-          className={styles.panel}
+          className={panelClass}
         >
           {loading && <li className={styles.loading}>Loading...</li>}
           {error && <li className={styles.error}>{error}</li>}
@@ -231,20 +257,33 @@ export function AutoComplete<T>(props: AutoCompleteProps<T>) {
             !error &&
             items.map((item, idx) => {
               const label = getItemLabel(item);
-              const href = getItemLink(item); // måste returnera t.ex. "/products/ID"
+              const href = getItemLink(item);
               const isActive = idx === highlighted;
 
               return (
                 <li
+                  key={idx}
                   id={`${listBoxId}-opt-${idx}`}
                   role="option"
                   aria-selected={isActive}
-                  key={idx}
                   onMouseEnter={() => setHighlighted(idx)}
-                  // viktig: blockera inte länkklick
-                  onClick={() => selectItem(item)}
+                  className="p-1"
                 >
-                  {renderHighlightedLabel(label, href)}
+                  <button
+                    type="button"
+
+                    className={isActive ? styles.rowActive : styles.row}
+                    // Behåll fokus (så outside-click inte triggar konstigt)
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => {
+                      closeList();
+                      setContainer?.(false);
+                      onSelect(item);
+                      if (href) navigate(href);
+                    }}
+                  >
+                    {label}
+                  </button>
                 </li>
               );
             })}

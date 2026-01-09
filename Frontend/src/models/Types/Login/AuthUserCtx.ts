@@ -1,7 +1,7 @@
-import type { User } from "./User";
+import type { AuthUser } from "./AuthUser";
 
 export type AuthUserCtxt = {
-    user: User;
+    user: AuthUser;
     loading: boolean;
-    setUser: (u: User) => void;
+    setUser: (u: AuthUser) => void;
 }
