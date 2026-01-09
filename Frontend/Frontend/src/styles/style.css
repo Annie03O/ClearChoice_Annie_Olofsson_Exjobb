@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@theme {
+    --breakpoint-2xl: initial;
+}
+
+body {
+    color: white;
+    font-family: 'Times New Roman', Times, serif;
+    background: #010057;
+}
+svg {
+    color: #010057;
+}
+
+.logo {
+    font-size: 2em;
+}
+
+button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

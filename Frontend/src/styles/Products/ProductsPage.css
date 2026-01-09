@@ -1,0 +1,78 @@
+.product-card {
+    display: flex;
+    background: #504a71;
+    width: 90%;
+    margin: 0 8rem;
+    padding: 20px;
+    border-radius: 25px;
+    font-family: 'Times New Roman', Times, serif;
+}
+.product-card section {
+    width: 50%;
+    font-size: 18px;
+}
+.product-card .product-info h3 {
+    font-size: 30px;
+}
+.product-card .product-info img {
+    width: 800px;
+    margin: 0 6em;
+}
+.product-card .product-info ul{ 
+    display: flex;
+    font-size: 20px;
+    flex-direction: column;
+    list-style: circle;
+    margin: 0 2rem;
+}
+.payment {
+    display: flex;
+    flex-direction: column;
+}
+.payment h1 {
+    font-size: 40px;
+    white-space: nowrap;
+}
+.payment p {
+    font-size: 1.5rem;
+}
+.payment button {
+    width: 120px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: #000;
+    color: #fff;
+    font-size: 1.1rem;
+}
+.save-icon {
+    font-size: 30px;
+    margin: 0 1rem ;
+}
+.payment .color-picker {
+    display: flex;
+}
+.payment .color-picker span {
+    display: block;
+    border-radius: 50px;
+    border: 4px solid black;
+    margin: 0 3px;
+}
+@media only screen and (max-width: 600px) {
+    .product-card {
+        display: flex;
+        flex-direction: column;
+        width: 95%;
+        margin: 0 0.7rem;
+        font-family: 'Times New Roman', Times, serif;
+    }
+    img {
+        width: 500px;
+    }
+    .product-card .product-info h3 {
+        font-size: 20px;
+        font-family: 'Times New Roman', Times, serif;
+    }
+    .product-card .product-info {
+        width: 95%;
+    }
+}
