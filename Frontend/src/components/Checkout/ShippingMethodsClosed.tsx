@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import type { ShippingMethod } from "../../models/Types/Cart/Shipping"
 type Props = {
     pickedMethod: ShippingMethod | undefined;

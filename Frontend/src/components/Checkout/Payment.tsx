@@ -22,7 +22,7 @@ type Props = {
     pickedShipping: ShippingMethod | undefined;
 }
 export const Payment: React.FC<Props> = ({pickedPayment, setPayment, open, closeMenu, pickedShipping}) => {
-     const [chosenMethod, setChosenMethod] = useState(false);
+     const [chosenMethod] = useState(false);
      const {items, dispatch} = useCart();
      const {address} = useCheckout();
  

@@ -22,7 +22,6 @@ export const EditPersonalInfo = ({
   initialName,
   initialEmail,
   error,
-  loading,
   onSave,
 }: EditPersonalInfoProps) => {
   // 🔹 Lokal state – detta styr inputs

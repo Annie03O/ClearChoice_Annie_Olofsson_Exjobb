@@ -11,8 +11,7 @@ export const handleAddToCart = (product: Product) => {
 }
 
 export const AllProducts = ({
-    allProductsList,
-    addToCart
+    allProductsList
 }: ProductPresentationProps) => {
 
     

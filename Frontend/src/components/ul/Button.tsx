@@ -1,4 +1,4 @@
-import React, { type FormEvent } from "react";
+import React from "react";
 
 type ButtonSize = "tiny" | "extra-small" | "small" | "medium" | "large" | "full-width";
 type ButtonVariant = "primary" | "secondary" | "thirtiary";
@@ -38,7 +38,6 @@ export const Button: React.FC<ButtonProps> = ({
   variant = "primary",
   type = "button",
   disabled,
-  modal,
   onClick,
   startPage,
 

@@ -1,6 +1,6 @@
 import { products } from "../../../models/objects/products";
 import { useParams } from "react-router";
-import type { Color, Product } from "../../../models/Types/Search/Product";
+import type { Color } from "../../../models/Types/Search/Product";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AddToCartButton } from "../../../components/Cart/AddToCartButton";
 import { tshirtSizesF } from "../../../models/objects/sizeCalculator/tshirtSizesF";

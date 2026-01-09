@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { useLocation } from "react-router";
 import type { Product } from "../../models/Types/Search/Product";
 import { products } from "../../models/objects/products"; // ✅ ändra sökväg om din skiljer

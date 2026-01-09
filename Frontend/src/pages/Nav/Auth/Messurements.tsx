@@ -20,7 +20,7 @@ export const Messurements = () => {
   });
   const { user, setUser } = useUserAuth();
   const [err, setErr] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);   
   const nav = useNavigate();
 
@@ -87,7 +87,6 @@ export const Messurements = () => {
     setErr(null);
 
     try {
-      setLoading(true);
 
       if (!user) {
         setErr("User not found");

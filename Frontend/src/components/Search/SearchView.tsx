@@ -1,16 +1,14 @@
 import { faSearch } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { useEffect, useState } from "react";
+import { Link } from "react-router";
 import type { AutoCompleteProps } from "../../models/Types/Search/BaseProps";
-import { useDebounceValue } from "../../hooks/useDebouncedValue";
 import { AutoComplete } from "./AutoComplete";
 import type { Product } from "../../models/Types/Search/Product";
 import { products } from "../../models/objects/products";
 import { apiFetcher } from "../../services/ApiFetcher";
 
-
-export  function SearchView<T>(props:AutoCompleteProps<T>)  { 
+export  function SearchView<T>(_props:AutoCompleteProps<T>)  { 
     const [query, setQuery] = useState("");
     const [open, setOpen] = useState(false);
     

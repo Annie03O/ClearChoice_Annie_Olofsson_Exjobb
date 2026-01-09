@@ -32,7 +32,7 @@ export function AutoComplete<T>(props: AutoCompleteProps<T>) {
   const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
-  const containerRef = useRef<HTMLsectionElement | null>(null);
+  const containerRef = useRef<HTMLElement | null>(null);
 
   // Hindrar att listan öppnar igen direkt efter att man valt ett item
   const suppressOpenRef = useRef(false);
