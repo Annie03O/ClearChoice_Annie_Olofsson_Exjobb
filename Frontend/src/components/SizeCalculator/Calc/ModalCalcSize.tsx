@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { Messurement } from "../../../models/Types/sizeCalculator/Messurements";
 import { getSizeFromRules } from "../../../functions/sizeCalculator.ts/recommended/getSizeFromRules";
 import { SizeInfo } from "./SizeInfo";
-import { CalcSizeForm } from "./CalcSizeForm";
 import { ModalCalcSizeForm } from "./ModalCalcSizeForm";
 
 type CalcSizeProps = {

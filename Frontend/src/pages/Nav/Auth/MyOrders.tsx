@@ -3,8 +3,7 @@ import { getMyOrders } from "../../../functions/Order/getMyOrders"
 import type { OrderResponse } from "../../../models/Types/Order/OrderResponse"
 
 export const MyOrders = () => {
-    const [orders, setOrders] = useState<OrderResponse[]>()
-    const [loading, setLoading] = useState(false);
+    const [orders] = useState<OrderResponse[]>()
     
     
     console.log("LOADED Profile.tsx >>>", import.meta.url);
@@ -20,8 +19,6 @@ export const MyOrders = () => {
 
     
 
-    if (loading) return <p>Loading...</p>
-    
     return (
         <section>
             <h1>Order History</h1>

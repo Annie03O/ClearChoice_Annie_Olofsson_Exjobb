@@ -2,17 +2,13 @@ import { ProfileWrapper } from "../../../components/ul/ProfileWrapper";
 import { useEffect, useState } from "react";
 import type { OrderResponse } from "../../../models/Types/Order/OrderResponse";
 import { apiGet } from "../../../lib/apiBase";
-import { useCart } from "../../../hooks/useCart";
 import { shippingMethods } from "../../../models/objects/shippingMethods";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router";
 
 export const OrderHistory = () => {
   const [orders, setOrders] = useState<OrderResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { orderPrice } = useCart();
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -51,8 +47,7 @@ export const OrderHistory = () => {
       <section className="flex flex-col gap-4 w-[90%]">
         {orders.map((o) => {
           // om du vill använda dessa sen:
-          const orderDate = new Date(o.createdAt);
-          const shippingMethod = shippingMethods.find(
+          shippingMethods.find(
             (m) => m.id === String(o.shippingMethodId)
           );
 

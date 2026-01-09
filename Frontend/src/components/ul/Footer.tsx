@@ -1,4 +1,4 @@
-import { faAngleDown, faAngleUp, faArrowDown, faArrowUp, faContactBook, faEnvelope, faHome, faInfoCircle, faLocation, faLocationPin, faLocationPinLock, faPhone, faRuler, faShirt } from "@fortawesome/free-solid-svg-icons";
+import { faAngleDown, faAngleUp, faEnvelope, faHome, faLocationPin, faPhone, faRuler, faShirt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";

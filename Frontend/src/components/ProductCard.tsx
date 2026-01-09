@@ -14,19 +14,18 @@ type ProductPresentationProps = {
   home?: boolean;
 };
 
-export const ProductCard = ({ oneProduct, searchResult, home }: ProductPresentationProps) => {
+export const ProductCard = ({ oneProduct, home }: ProductPresentationProps) => {
   const navigate = useNavigate();
-  const [openProductPage, setOpenProductPage] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [color, setColor] = useState<Color | null>(null);
   const [size, setSize] = useState<Messurement | null>(null);
 
   const goToProductPage = () => {
     if (openModal === true) {
-      setOpenProductPage(false);
+      setOpenModal(false);
       return;
     }
-    setOpenProductPage(true);
+    setOpenModal(true);
     navigate("/Products/" + oneProduct.id);
   };
 

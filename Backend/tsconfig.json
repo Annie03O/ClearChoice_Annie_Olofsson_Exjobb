@@ -6,7 +6,7 @@
     "esModuleInterop": true,
     "strict": true,
     "skipLibCheck": true,
-    "outDir": "./dist",
+    "outDir": "dist",
     "types": ["node"],
     "typeRoots": ["./src/models/types", "./src/models/types/Order","./src/models/types/Payload", "./src/models/objects", "./src/models/objects/sizeCalculator", "./node_modules/@types"]
   },

@@ -1,4 +1,4 @@
-import { Link, useLocation, useMatches, useNavigate, useParams } from "react-router";
+import { Link, useMatches, useParams } from "react-router";
 
 type Crumb = {
     label: string;
@@ -7,8 +7,6 @@ type Crumb = {
 
 export const BreadCrumbs = ({lastVisited}: {lastVisited: string}) => {
     const matches = useMatches();
-    const navigate = useNavigate();
-    const location = useLocation();
     const {id} = useParams();
 
     if (!id) console.warn("No id param found in URL for BreadCrumbs component.");

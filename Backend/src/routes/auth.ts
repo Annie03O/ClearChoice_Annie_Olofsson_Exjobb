@@ -21,8 +21,8 @@ const isProd = process.env.NODE_ENV === "production";
 
 const cookieOptions = {
   httpOnly: true,
-  secure: isProd, // true in production, false in development
-  sameSite: isProd ? "none" : "lax", // lax for localhost, none for production
+  secure: true, // Always true since we're using HTTPS (GitHub Pages to localhost requires this)
+  sameSite: "none" as const, // Required for cross-origin cookies
   path: "/",
 } as const;
 

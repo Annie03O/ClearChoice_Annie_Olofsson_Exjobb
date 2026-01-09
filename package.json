@@ -2,7 +2,8 @@
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
     "@types/http-proxy": "^1.17.16",
-    "bcrypt": "^6.0.0"
+    "bcrypt": "^6.0.0",
+    "gh-pages": "^6.3.0"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.1.0"

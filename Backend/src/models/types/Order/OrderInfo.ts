@@ -1,6 +1,6 @@
-import { Billing } from "./Billing";
-import { PaymentMethod } from "./PaymentMethod";
-import { ShippingMethod } from "./Shipping"; 
+import type { Billing } from "./Billing";
+import type { PaymentMethod } from "./PaymentMethod";
+import type { ShippingMethod } from "./Shipping"; 
 
 export type OrderInfo = {
     id: string;

@@ -2,12 +2,10 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { JwtUserPayload } from "../models/types/JwtPayload";
 
-const isProd = process.env.NODE_ENV === "production";
-
 const cookieOptions = {
   httpOnly: true,
-  secure: isProd,
-  sameSite: isProd ? "none" : "lax",
+  secure: true, // Always true since we're using HTTPS (GitHub Pages to localhost requires this)
+  sameSite: "none" as const, // Required for cross-origin cookies
   path: "/",
 } as const;
 

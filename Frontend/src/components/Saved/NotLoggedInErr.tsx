@@ -7,7 +7,7 @@ type NotLoggedInProps = {
       login: boolean;
       setLogin: React.Dispatch<React.SetStateAction<Boolean>>; // ← nullable
 }
-export const NotLoggedIn: React.FC<NotLoggedInProps> = ({open, onClose, login, setLogin}) => {
+export const NotLoggedIn: React.FC<NotLoggedInProps> = ({open, onClose, setLogin}) => {
     useEffect(() => {
       const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
       if (open) document.addEventListener("keydown", onKey);

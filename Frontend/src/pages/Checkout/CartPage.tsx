@@ -10,7 +10,6 @@ import { useLocation } from "react-router";
 export const CartPage = () => {
    const { isAuthenticated } = useUserAuth();
    const [showAuthModal, setShowAuthModal] = useState(false);
-   const [login, setLogin] = useState(false);     
    const location = useLocation();
    
    const handleClick = () => {

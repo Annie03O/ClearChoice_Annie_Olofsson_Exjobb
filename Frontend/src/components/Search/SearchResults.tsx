@@ -10,7 +10,7 @@ import type { Product } from "../../models/Types/Search/Product";
      addToCart: (p: Product) => void;
  }
 
-export const SearchResults = ({ addToCart}: ProductPresentationProps) => {
+export const SearchResults = ({}: ProductPresentationProps) => {
     const [params] = useSearchParams();
     const q = (params.get("q") ?? "").trim();
 

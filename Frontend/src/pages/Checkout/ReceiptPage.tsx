@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useParams, useSearchParams } from "react-router";
+import { Link, useParams } from "react-router";
 import type { OrderResponse } from "../../models/Types/Order/OrderResponse";
 import { getOrder } from "../../functions/Order/getOrder";
 import { Receipt } from "../Nav/Auth/Receipt";
