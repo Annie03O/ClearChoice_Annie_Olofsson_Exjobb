@@ -1,4 +1,3 @@
-
 import {  useSearchParams } from "react-router-dom"
 import { products } from "../../models/objects/products";
 import { useMemo } from "react";

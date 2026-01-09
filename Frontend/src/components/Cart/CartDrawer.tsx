@@ -81,9 +81,9 @@ export const CartDrawer: React.FC = () => {
                 ) : (
                   cartItems.map((ci) => (
                     <section key={ci.id} className="flex gap-3 items-center border rounded p-2">
-                      {ci.imgUrl && (
+                      {ci.black || ci.white || ci.grey && (
                         <img
-                          src={ci.imgUrl}
+                          src={ci.black || ci.white || ci.grey}
                           alt={ci.label}
                           className="h-14 w-14 object-cover rounded"
                         />

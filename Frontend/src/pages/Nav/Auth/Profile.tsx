@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom"; 
 import { api } from "../../../lib/apiBase";
 import { useUserAuth } from "../../../hooks/Auth/useUserAuth";
 import { ProfileWrapper } from "../../../components/ul/ProfileWrapper";
@@ -13,6 +13,10 @@ export const Profile = () => {
 
     console.log(user);
     
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError("");
 
     const handleSubmit = async () => {
         setError("");
@@ -38,6 +42,14 @@ export const Profile = () => {
         navigate("/dashboard/Order_History")
     }
     return (
+        <section>
+        <section>
+            <h1>Profile</h1>
+            {error && <p>{error}</p>}
+            <h2><Link to={"/Personal_Information"}>Personal Information</Link></h2>
+            <h2><Link to={"/My_Messurements"}>My Messurements</Link></h2>
+            <button onClick={handleSubmit}>Sign Out</button>
+        </section>
         <ProfileWrapper title="Profile" isEditing={false} handleSubmit={handleSubmit} canEdit={false}>     
             {user && <p className="text-[clamp(15px,2vw,35px)] mb-4">Welcome, {user.name}!</p>}
             <section className="flex flex-col gap-2 mb-2 w-full items-center justify-center">
@@ -54,6 +66,7 @@ export const Profile = () => {
             </section>
            
         </ProfileWrapper>
-
+        </section>
     )
+}
 }

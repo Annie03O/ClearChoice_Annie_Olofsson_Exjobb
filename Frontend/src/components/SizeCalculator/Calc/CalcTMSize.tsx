@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { api } from "../../../lib/apiBase";           // din axios-instans
 import { getRecommendedTSizeF } from "../../../functions/sizeCalculator.ts/recommended/getRecommendedTSizeF"; // din beräknare
 import { useMSizeCalc } from "../../../hooks/Calc/useMSizeCalc ";
-import type { CalcTSizeMDTO } from "../../../models/Types/sizeCalculator/DTO/Calc/calcTSizeMDTO";
+import type { CalcTSizeMDTO } from "../../../models/Types/sizeCalculator/DTO/Calc/CalcTSizeMDTO";
 
 // Den här komponenten hanterar F (dam)
 export const CalcMTSize = () => {

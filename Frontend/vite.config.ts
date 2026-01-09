@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react(), svgr()],
-    base: "/",
+    base: "/ClearChoice_Annie_Olofsson_Exjobb/",
 
     // ✅ Proxy behövs bara vid `vite dev`
     server: {

@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 import type {  CartItem } from "../models/Types/Cart/CartItem";
+=======
+import type { CartItem } from "../components/Cart/CartButton";
+import type { Product } from "../models/Types/Search/Product";
+>>>>>>> 46e2c18 (fixar error)
 
 export type CartState = {
     items: CartItem[],
@@ -12,6 +17,7 @@ export type CartAction =
   | { type: "CLEAR"}
 
 
+<<<<<<< HEAD
 
 export function cartReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
@@ -31,6 +37,64 @@ export function cartReducer(state: CartState, action: CartAction): CartState {
       }
 
       return { items: [...state.items, { ...action.payload, qty: qtyToAdd}] };
+=======
+export const CartReducer = (cartItems: CartItem[], action: Action) => {
+    switch (action.type) {
+        case ActionTypes.ADDED: {
+            const productToAdd = JSON.parse(action.payload) as Product;
+            const foundProduct = cartItems.find(
+                (ci) => ci.id === productToAdd.id
+            );
+
+            if (!foundProduct) {
+                return [...cartItems, {product: productToAdd, amount: 1}];
+            } else {
+                return cartItems.map((ci) => {
+                    if (ci.id === productToAdd.id) {
+                        return {...ci, amount: ci.qty + 1};
+                    }
+                    return ci;
+                })
+            }
+        }
+
+        case ActionTypes.INCREASED: {
+            return cartItems.map((ci) => {
+                if (ci.id === action.payload) {
+                    return {...ci, amount: ci.qty + 1}
+                }
+                return ci;
+            });
+        }
+
+        case ActionTypes.DECREASED: {
+            const foundProduct = cartItems.find(
+                (ci) => ci.id === action.payload
+            );
+
+            if (!foundProduct) {
+                return cartItems;
+            }
+
+            if (foundProduct.qty > 1) {
+                return cartItems.map((ci) => {
+                    if (ci.id === action.payload) {
+                        return {...ci, amount: ci.qty - 1}
+                    }
+                    return ci;
+                });
+            } else {
+                return cartItems.filter((ci) => ci.id !== action.payload);
+            }
+        }
+
+        case ActionTypes.REMOVED: {
+            return cartItems.filter((ci) => ci.id !== action.payload);
+        }
+
+        default:
+            return cartItems;
+>>>>>>> 46e2c18 (fixar error)
     }
 
     case "INCREASE": 
